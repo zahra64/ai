@@ -238,9 +238,30 @@ function formatTime(s) {
   return Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
 }
 
-function generateQuiz() {
-  // Step 2: vasl be n8n webhook
-  alert('n8n agent hanooz vasl nashodeh — step 2!');
+async function generateQuiz() {
+  if (!currentAudioUrl) {
+    alert('Please load an audio file first!');
+    return;
+  }
+  const btn = document.getElementById('gen-btn');
+  btn.textContent = 'Generating...';
+  btn.disabled = true;
+
+  try {
+    const response = await fetch('https://ffmpegvid.agnarai.se/webhook-test/a3c77238-918b-4237-a624-85b24e2f5684', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ audio_url: currentAudioUrl })
+    });
+    const data = await response.json();
+    console.log('n8n response:', data);
+    alert('Done! Check console for response.');
+  } catch (err) {
+    alert('Error: ' + err.message);
+  }
+
+  btn.textContent = 'Generate Quiz →';
+  btn.disabled = false;
 }
 </script>
 </body>
